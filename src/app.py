@@ -1,13 +1,15 @@
 import discord
 from flask import Flask, redirect, request
 
+from constants import CLIENT_ID, CLIENT_SECRET
+
 app = Flask(__name__)
 
 
 def handle_authorization_code(code):
     # Replace with your bot's client ID and client secret
-    client_id = "1208087413789040760"
-    client_secret = "vNyYVlOa9UXXiZLojyY6m_ATMpElWpZk"
+    client_id = CLIENT_ID
+    client_secret = CLIENT_SECRET
 
     # Exchange the authorization code for an access token
     access_token = discord.utils.oauth_complete(client_id, client_secret, code)
