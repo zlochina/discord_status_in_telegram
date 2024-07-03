@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "discord-status-in-telegram"
+version = "0.1.0"
+description = "Project that allows to transmit status of Discord voice channels of the given Guild to Telegram group"
+authors = ["Vladyslav Zlochevskyi <zlochvla@fel.cvut.cz>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
