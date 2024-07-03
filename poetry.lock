@@ -359,6 +359,16 @@ files = [
 ]
 
 [[package]]
+name = "telegram"
+version = "0.0.1"
+description = "Telegram APIs"
+optional = false
+python-versions = "*"
+files = [
+    {file = "telegram-0.0.1.tar.gz", hash = "sha256:d405a0af4c868a8dbeae6d03e297e21c7ee6269e11e2ed3810e15544aba02591"},
+]
+
+[[package]]
 name = "yarl"
 version = "1.9.4"
 description = "Yet another URL library"
@@ -464,4 +474,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "c35026cff8bd81706bc0b4d1d9d8fdfa4ee4b0a12198994837fe9377ebd057ab"
+content-hash = "a7091c933251566ed0dcf333e8af3eb93b5c706a90373037a3d977df25c7c077"
