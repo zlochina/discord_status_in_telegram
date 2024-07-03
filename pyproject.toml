@@ -10,6 +10,9 @@ python = "^3.11"
 discord = "^2.3.2"
 telegram = "^0.0.1"
 
+[tool.poetry.scripts]
+app = "discord_status_in_telegram.main:asyncmain"
+
 
 [build-system]
 requires = ["poetry-core"]
