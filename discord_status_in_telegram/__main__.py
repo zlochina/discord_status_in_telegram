@@ -10,16 +10,13 @@ logger = setup_logger(__name__)
 
 
 async def main():
-    config_holder = ConfigurationHolder()
-    config = config_holder.get_config()
+    ch = ConfigurationHolder()
 
     logger.info("Initializing Discord client")
-    discord_client = DiscordClient(
-        config["Discord"]["token"], config["Discord"]["guild_id"]
-    )
+    discord_client = DiscordClient(ch.discord.token, ch.discord.guild_id)
     # logger.info("Initializing Telegram client")
     # telegram_client = TelegramClient(
-    #     config["Telegram"]["token"], config["Telegram"]["chat_id"]
+    #     ch.telegram.token, ch.telegram.chat_id
     # )
     logger.info("Starting Discord client")
     await discord_client.start()
@@ -30,7 +27,7 @@ async def main():
     # while True:
     #     status = await discord_client.get_voice_channels_status()
     #     await telegram_client.send_status(status)
-    #     await asyncio.sleep(int(config["General"]["update_interval"]))
+    #     await asyncio.sleep(int(ch.update_interval))
 
 
 def asyncmain():
