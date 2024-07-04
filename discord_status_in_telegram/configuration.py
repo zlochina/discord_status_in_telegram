@@ -42,6 +42,7 @@ class ConfigurationHolder:
         logger.info("Configuration loaded successfully.")
         logger.debug(f"Configuration: {self.config}")
 
+        logger.info("Setting configuration values")
         self.discord.set_values(self.config["Discord"])
         self.telegram.set_values(self.config["Telegeram"])
         self.update_interval = self.config["General"]["update_interval"]
@@ -51,3 +52,17 @@ class ConfigurationHolder:
 
     def get(self, key):
         return self.config[key]
+
+    def set(self, section, key, value):
+        logger.info(f"Setting {key} to {value} in section {section}")
+        # add a new section if it doesnt exist
+        if section not in self.config:
+            self.config[section] = {}
+
+        # add/update a key-value pair
+        self.config[section][key] = value
+
+        # update configuration file
+        with open(self.CONFIG_FILEPATH, "w") as configfile:
+            self.config.write(configfile)
+        logger.info(f"Configuration updated successfully.")
