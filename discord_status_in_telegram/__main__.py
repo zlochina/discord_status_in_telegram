@@ -1,6 +1,6 @@
 import asyncio
-import configparser
 
+from configuration import ConfigurationHolder
 from discord_client import DiscordClient
 from logger_config import setup_logger
 from telegram_client import TelegramClient
@@ -9,16 +9,9 @@ from telegram_client import TelegramClient
 logger = setup_logger(__name__)
 
 
-def load_config():
-    logger.info("Loading configuration from config.ini")
-    config = configparser.ConfigParser()
-    config.read("config.ini")
-    return config
-
-
 async def main():
-    config = load_config()
-    logger.info("Configuration loaded successfully")
+    config_holder = ConfigurationHolder()
+    config = config_holder.get_config()
 
     logger.info("Initializing Discord client")
     discord_client = DiscordClient(
