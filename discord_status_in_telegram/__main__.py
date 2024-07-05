@@ -51,8 +51,8 @@ def asyncmain():
 
 
 if __name__ == "__main__":
-    logger.debug("Starting application")
     args = parse_arguments()
+    logger.debug("Starting application")
     if args.init:
         init_app()
     else:

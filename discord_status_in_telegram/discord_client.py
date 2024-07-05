@@ -1,17 +1,24 @@
+import time
+
 import discord
+import requests
+from configuration import ConfigurationHolder
 from logger_config import setup_logger
 
 logger = setup_logger(__name__)
 
+API_ENDPOINT = "https://discord.com/api/v10"
+
 
 class DiscordClient:
-    def __init__(self, token, guild_id):
+    def __init__(self):
         logger.info("Initializing Discord Client")
         intents = discord.Intents.default()
         intents.members = True
+        self.ch = ConfigurationHolder()
         self.client = discord.Client(intents=intents)
-        self.token = token
-        self.guild_id = int(guild_id)
+        self.token = self.ch.discord.token
+        self.guild_id = int(self.ch.discord.guild_id)
         self.setup_events()
 
     def setup_events(self):
@@ -45,3 +52,43 @@ class DiscordClient:
 
         await self.client.close()
         return status
+
+    def refresh_token(self):
+        logger.info("Refreshing Discord token")
+        data = {
+            "grant_type": "refresh_token",
+            "refresh_token": self.ch.discord.refresh_token,
+        }
+
+        headers = {"Content-Type": "application/x-www-form-urlencoded"}
+
+        try:
+            response = requests.post(
+                f"{API_ENDPOINT}/oauth2/token",
+                data=data,
+                headers=headers,
+                auth=(self.ch.discord.client_id, self.ch.discord.client_secret),
+            )
+            response.raise_for_status()
+
+            token_data = response.json()
+            logger.debug(token_data)
+
+            # Update the token in the client
+            self.token = token_data["access_token"]
+
+            # Update the configuration
+            self.ch.set("Discord", "token", self.token)
+            self.ch.set("Discord", "refresh_token", token_data["refresh_token"])
+            self.ch.set(
+                "Discord",
+                "expiration_timestamp",
+                str(int(time.time()) + token_data["expires_in"]),
+            )
+
+            logger.info("Successfully refreshed Discord token")
+            return token_data
+        except requests.RequestException as e:
+            logger.error(f"Retrieved failed response: {response.json()}")
+            logger.error(f"Failed to refresh Discord token: {str(e)}")
+            raise
