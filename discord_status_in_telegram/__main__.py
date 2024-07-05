@@ -21,7 +21,7 @@ async def main():
     ch = ConfigurationHolder()
 
     logger.info("Initializing Discord client")
-    discord_client = DiscordClient(ch.discord.token, ch.discord.guild_id)
+    discord_client = DiscordClient()
     # logger.info("Initializing Telegram client")
     # telegram_client = TelegramClient(
     #     ch.telegram.token, ch.telegram.chat_id
