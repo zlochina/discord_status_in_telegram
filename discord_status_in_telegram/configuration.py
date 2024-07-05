@@ -8,12 +8,20 @@ logger = setup_logger("configuration")
 
 class DiscordConfiguration:
     def __init__(self):
-        self.token = ""
-        self.guild_id = ""
+        self.token = None
+        self.guild_id = None
+        self.client_id = None
+        self.client_secret = None
+        self.redirect_uri = None
+        self.expiration_timestamp = None
 
     def set_values(self, dictionary):
-        self.token = dictionary["token"]
-        self.guild_id = dictionary["guild_id"]
+        self.token = dictionary.get("token", None)
+        self.guild_id = dictionary.get("guild_id", None)
+        self.client_id = dictionary.get("client_id", None)
+        self.client_secret = dictionary.get("client_secret", None)
+        self.redirect_uri = dictionary.get("redirect_uri", None)
+        self.expiration_timestamp = dictionary.get("expiration_timestamp", None)
 
 
 class TelegramConfiguration:
@@ -22,8 +30,8 @@ class TelegramConfiguration:
         self.chat_id = ""
 
     def set_values(self, dictionary):
-        self.token = dictionary["token"]
-        self.chat_id = dictionary["chat_id"]
+        self.token = dictionary.get("token", "")
+        self.chat_id = dictionary.get("chat_id", "")
 
 
 class ConfigurationHolder:
@@ -44,7 +52,7 @@ class ConfigurationHolder:
 
         logger.info("Setting configuration values")
         self.discord.set_values(self.config["Discord"])
-        self.telegram.set_values(self.config["Telegeram"])
+        self.telegram.set_values(self.config["Telegram"])
         self.update_interval = self.config["General"]["update_interval"]
 
     def get_config(self):
