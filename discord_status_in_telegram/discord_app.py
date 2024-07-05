@@ -3,7 +3,7 @@ import time
 import discord
 import requests
 from configuration import ConfigurationHolder
-from flask import Flask, Response
+from flask import Flask, Response, request
 from logger_config import setup_logger
 
 # Set up logging
@@ -67,7 +67,7 @@ class DiscordApp:
         data = {
             "grant_type": "authorization_code",
             "code": code,
-            "redirect_uri": self.redirect_uri.append("/discord/callback"),
+            "redirect_uri": self.redirect_uri + "/discord/callback",
         }
         logger.debug("Data: %s" % data)
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
@@ -77,7 +77,12 @@ class DiscordApp:
             headers=headers,
             auth=(self.client_id, self.client_secret),
         )
-        r.raise_for_status()
+
+        try:
+            r.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            logger.error("Response: %s" % r.json())
+            logger.error("Error: %s" % e)
 
         logger.debug("Response: %s" % r.json())
 
