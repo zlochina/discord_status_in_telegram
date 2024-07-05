@@ -14,7 +14,7 @@ logger = setup_logger(__name__)
 def init_app():
     logger.info("Running in initialization mode")
     discord_app = DiscordApp()
-    discord_app.run_applicaiton()  # Note: This will block until the Flask app is stopped
+    discord_app.start_authorization_flow()
 
 
 async def main():

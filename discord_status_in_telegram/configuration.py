@@ -15,6 +15,8 @@ class DiscordConfiguration:
         self.redirect_uri = None
         self.refresh_token = None
         self.expiration_timestamp = None
+        self.scopes = None
+        self.permissions = None
 
     def set_values(self, dictionary):
         self.token = dictionary.get("token", None)
@@ -24,6 +26,9 @@ class DiscordConfiguration:
         self.redirect_uri = dictionary.get("redirect_uri", None)
         self.refresh_token = dictionary.get("refresh_token", None)
         self.expiration_timestamp = dictionary.get("expiration_timestamp", None)
+        scopes = dictionary.get("scopes", None)
+        self.scopes = scopes.split(" ") if scopes is not None else None
+        self.permissions = dictionary.get("permissions", None)
 
     def __str__(self):
         return f"""Discord:
@@ -33,7 +38,9 @@ class DiscordConfiguration:
     client_secret: {self.client_secret}
     redirect_uri: {self.redirect_uri}
     refresh_token: {self.refresh_token}
-    expiration_timestamp: {self.expiration_timestamp}"""
+    expiration_timestamp: {self.expiration_timestamp}
+    scopes: {self.scopes}
+    permissions: {self.permissions}"""
 
 
 class TelegramConfiguration:

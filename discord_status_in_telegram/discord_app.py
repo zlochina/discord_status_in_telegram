@@ -1,6 +1,6 @@
 import time
+import urllib.parse
 
-import discord
 import requests
 from configuration import ConfigurationHolder
 from flask import Flask, Response, request
@@ -28,6 +28,8 @@ close_page_html_content = """
             </body>
             </html>
             """
+API_ENDPOINT = "https://discord.com/api/v10"
+OAUTH_ENDPOINT = "https://discord.com/api/oauth2/authorize"
 
 
 class DiscordApp:
@@ -39,6 +41,8 @@ class DiscordApp:
         self.client_secret = self.ch.discord.client_secret
         self.redirect_uri = self.ch.discord.redirect_uri
         self.app = Flask(__name__)
+        self.scopes = self.ch.discord.scopes
+        self.permissions = self.ch.discord.permissions
         self.setup_routes()
 
     def setup_routes(self):
@@ -61,7 +65,6 @@ class DiscordApp:
     def handle_authorization_code(self, code):
         logger.info("Handling authorization code")
         # Exchange the authorization code for an access token
-        API_ENDPOINT = "https://discord.com/api/v10"
 
         logger.info("Requesting access token")
         data = {
@@ -101,6 +104,49 @@ class DiscordApp:
         logger.info("Updating refresh token")
         self.ch.set("Discord", "refresh_token", self.refresh_token)
 
-    def run_applicaiton(self):
+    def create_authorization_link(self):
+        """
+        Create the Discord authorization link and prompt the user to visit it.
+
+        :param scopes: List of OAuth2 scopes to request
+        """
+
+        def custom_uri_encode(s):
+            return urllib.parse.quote(s, safe="+")
+
+        params = {
+            "client_id": self.client_id,
+            "redirect_uri": self.redirect_uri + "/discord/callback",
+            "response_type": "code",
+            "permissions": self.permissions,
+            "integration_type": 0,
+            "scope": "+".join(self.scopes),
+        }
+
+        encoded_params = "&".join(
+            f"{custom_uri_encode(str(k))}={custom_uri_encode(str(v))}"
+            for k, v in params.items()
+        )
+        auth_url = f"{OAUTH_ENDPOINT}?{encoded_params}"
+
+        print("Please visit the following URL to authorize the application:")
+        print(auth_url)
+        print(
+            "\nAfter authorizing, you will be redirected to a page that may not load properly."
+        )
+        print(
+            "This is expected. You can close that page once you see the 'Authorization Complete' message."
+        )
+
+    def run_application(self):
         logger.info("Running Discord application")
         self.app.run(debug=True, port=8000)
+
+    def start_authorization_flow(self):
+        """
+        Start the authorization flow by creating the link and running the Flask app.
+
+        :param scopes: List of OAuth2 scopes to request
+        """
+        self.create_authorization_link()
+        self.run_application()
