@@ -13,6 +13,7 @@ class DiscordConfiguration:
         self.client_id = None
         self.client_secret = None
         self.redirect_uri = None
+        self.refresh_token = None
         self.expiration_timestamp = None
 
     def set_values(self, dictionary):
@@ -21,6 +22,7 @@ class DiscordConfiguration:
         self.client_id = dictionary.get("client_id", None)
         self.client_secret = dictionary.get("client_secret", None)
         self.redirect_uri = dictionary.get("redirect_uri", None)
+        self.refresh_token = dictionary.get("refresh_token", None)
         self.expiration_timestamp = dictionary.get("expiration_timestamp", None)
 
 
@@ -55,6 +57,24 @@ class ConfigurationHolder:
         self.telegram.set_values(self.config["Telegram"])
         self.update_interval = self.config["General"]["update_interval"]
 
+        logger.debug(
+            f"""Configuration values:
+Discord:
+    token: {self.discord.token}
+    guild_id: {self.discord.guild_id}
+    client_id: {self.discord.client_id}
+    client_secret: {self.discord.client_secret}
+    redirect_uri: {self.discord.redirect_uri}
+    refresh_token: {self.discord.refresh_token}
+    expiration_timestamp: {self.discord.expiration_timestamp}
+Telegram:
+    token: {self.telegram.token}
+    chat_id: {self.telegram.chat_id}
+General:
+    update_interval: {self.update_interval}
+                     """
+        )
+
     def get_config(self):
         return self.config
 
@@ -62,7 +82,8 @@ class ConfigurationHolder:
         return self.config[key]
 
     def set(self, section, key, value):
-        logger.info(f"Setting {key} to {value} in section {section}")
+        logger.info(f"Setting {key} in section {section}")
+        logger.debug(f"Setting {key} to {value} in section {section}")
         # add a new section if it doesnt exist
         if section not in self.config:
             self.config[section] = {}
@@ -73,4 +94,4 @@ class ConfigurationHolder:
         # update configuration file
         with open(self.CONFIG_FILEPATH, "w") as configfile:
             self.config.write(configfile)
-        logger.info(f"Configuration updated successfully.")
+        logger.info("Configuration updated successfully.")
