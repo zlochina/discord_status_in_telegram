@@ -67,7 +67,7 @@ class DiscordApp:
         data = {
             "grant_type": "authorization_code",
             "code": code,
-            "redirect_uri": self.redirect_uri,
+            "redirect_uri": self.redirect_uri.append("/discord/callback"),
         }
         logger.debug("Data: %s" % data)
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
