@@ -25,6 +25,16 @@ class DiscordConfiguration:
         self.refresh_token = dictionary.get("refresh_token", None)
         self.expiration_timestamp = dictionary.get("expiration_timestamp", None)
 
+    def __str__(self):
+        return f"""Discord:
+    token: {self.token}
+    guild_id: {self.guild_id}
+    client_id: {self.client_id}
+    client_secret: {self.client_secret}
+    redirect_uri: {self.redirect_uri}
+    refresh_token: {self.refresh_token}
+    expiration_timestamp: {self.expiration_timestamp}"""
+
 
 class TelegramConfiguration:
     def __init__(self):
@@ -34,6 +44,11 @@ class TelegramConfiguration:
     def set_values(self, dictionary):
         self.token = dictionary.get("token", "")
         self.chat_id = dictionary.get("chat_id", "")
+
+    def __str__(self):
+        return f"""Telegram:
+    token: {self.token}
+    chat_id: {self.chat_id}"""
 
 
 class ConfigurationHolder:
@@ -57,23 +72,7 @@ class ConfigurationHolder:
         self.telegram.set_values(self.config["Telegram"])
         self.update_interval = self.config["General"]["update_interval"]
 
-        logger.debug(
-            f"""Configuration values:
-Discord:
-    token: {self.discord.token}
-    guild_id: {self.discord.guild_id}
-    client_id: {self.discord.client_id}
-    client_secret: {self.discord.client_secret}
-    redirect_uri: {self.discord.redirect_uri}
-    refresh_token: {self.discord.refresh_token}
-    expiration_timestamp: {self.discord.expiration_timestamp}
-Telegram:
-    token: {self.telegram.token}
-    chat_id: {self.telegram.chat_id}
-General:
-    update_interval: {self.update_interval}
-                     """
-        )
+        logger.debug(self)
 
     def get_config(self):
         return self.config
@@ -95,3 +94,10 @@ General:
         with open(self.CONFIG_FILEPATH, "w") as configfile:
             self.config.write(configfile)
         logger.info("Configuration updated successfully.")
+
+    def __str__(self):
+        return f"""Configuration values:
+{self.discord}
+{self.telegram}
+General:
+    update_interval: {self.update_interval}"""
