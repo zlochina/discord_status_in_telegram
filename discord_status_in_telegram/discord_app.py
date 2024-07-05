@@ -95,6 +95,7 @@ class DiscordApp:
         expires_in = r.json()["expires_in"]
         self.expiration_timestamp = str(int(time.time()) + expires_in)
         self.refresh_token = r.json()["refresh_token"]
+        self.guild_id = r.json()["guild"]["id"]
 
     def update_config(self):
         logger.info("Updating access token")
@@ -103,6 +104,7 @@ class DiscordApp:
         self.ch.set("Discord", "expiration_timestamp", self.expiration_timestamp)
         logger.info("Updating refresh token")
         self.ch.set("Discord", "refresh_token", self.refresh_token)
+        self.ch.set("Discord", "guild_id", self.guild_id)
 
     def create_authorization_link(self):
         """
