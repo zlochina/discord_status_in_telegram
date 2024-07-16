@@ -2,8 +2,10 @@ import time
 
 import discord
 import requests
-from configuration import ConfigurationHolder
-from logger_config import setup_logger
+from discord.ext import commands
+
+from .configuration import ConfigurationHolder
+from .logger_config import setup_logger
 
 logger = setup_logger(__name__)
 
@@ -16,7 +18,7 @@ class DiscordClient:
         intents = discord.Intents.default()
         intents.members = True
         self.ch = ConfigurationHolder()
-        self.client = discord.Client(intents=intents)
+        self.client = commands.Bot(command_prefix="!", intents=intents)
         self.token = self.ch.discord.token
         self.guild_id = int(self.ch.discord.guild_id)
         self.setup_events()
@@ -25,7 +27,7 @@ class DiscordClient:
         logger.debug("Setting up Discord events")
 
         @self.client.event
-        async def on_ready(self):
+        async def on_ready():
             logger.info(f"{self.client.user.name} has connected to Discord!")
 
     async def start(self):
@@ -72,7 +74,7 @@ class DiscordClient:
             response.raise_for_status()
 
             token_data = response.json()
-            logger.debug(token_data)
+            logger.debug(f"Retrieved response: {token_data}")
 
             # Update the token in the client
             self.token = token_data["access_token"]
@@ -87,7 +89,6 @@ class DiscordClient:
             )
 
             logger.info("Successfully refreshed Discord token")
-            return token_data
         except requests.RequestException as e:
             logger.error(f"Retrieved failed response: {response.json()}")
             logger.error(f"Failed to refresh Discord token: {str(e)}")

@@ -2,9 +2,10 @@ import time
 import urllib.parse
 
 import requests
-from configuration import ConfigurationHolder
 from flask import Flask, Response, request
-from logger_config import setup_logger
+
+from .configuration import ConfigurationHolder
+from .logger_config import setup_logger
 
 # Set up logging
 logger = setup_logger(__name__)

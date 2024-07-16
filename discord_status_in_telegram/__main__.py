@@ -1,11 +1,11 @@
 import argparse
 import asyncio
 
-from configuration import ConfigurationHolder
-from discord_app import DiscordApp
-from discord_client import DiscordClient
-from logger_config import setup_logger
-from telegram_client import TelegramClient
+from .configuration import ConfigurationHolder
+from .discord_app import DiscordApp
+from .discord_client import DiscordClient
+from .logger_config import setup_logger
+from .telegram_client import TelegramClient
 
 # Set up logger
 logger = setup_logger(__name__)
@@ -18,16 +18,18 @@ def init_app():
 
 
 async def main():
-    ch = ConfigurationHolder()
-
     logger.info("Initializing Discord client")
     discord_client = DiscordClient()
     # logger.info("Initializing Telegram client")
     # telegram_client = TelegramClient(
     #     ch.telegram.token, ch.telegram.chat_id
     # )
+    # discord_client.refresh_token()
     await discord_client.start()
     logger.info("Discord client started successfully")
+
+    # debug sleep 5 seconds
+    await asyncio.sleep(10)
 
     print(await discord_client.get_voice_channels_status())
 

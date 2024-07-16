@@ -1,6 +1,6 @@
 import configparser
 
-from logger_config import setup_logger
+from .logger_config import setup_logger
 
 # Set up logger
 logger = setup_logger("configuration")
