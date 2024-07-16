@@ -71,6 +71,12 @@ Contributions are welcome! If you'd like to contribute to this project, please f
 
 Please ensure that your code adheres to the project's coding standards and includes appropriate tests.
 
+## Potential improvements
+
+- [ ] Update Discord message forwarding mechanism to process photos, etc.
+- [ ] Generalise application to maintain several Discord guilds and Telegram chats at once.
+- [ ] Update Telegram send message mechanism to use Markdown style.
+
 ## License
 
 This project is licensed under the [MIT License](./LICENSE).
