@@ -6,6 +6,7 @@ from discord.ext import commands
 
 from .configuration import ConfigurationHolder
 from .logger_config import setup_logger
+from .telegram_client import TelegramClient
 
 logger = setup_logger(__name__)
 
@@ -13,7 +14,7 @@ API_ENDPOINT = "https://discord.com/api/v10"
 
 
 class DiscordClient:
-    def __init__(self):
+    def __init__(self, telegramClient: TelegramClient):
         logger.info("Initializing Discord Client")
         intents = discord.Intents.default()
         intents.members = True
@@ -21,14 +22,33 @@ class DiscordClient:
         self.client = commands.Bot(command_prefix="!", intents=intents)
         self.token = self.ch.discord.token
         self.guild_id = int(self.ch.discord.guild_id)
+        self.telegramClient = telegramClient
         self.setup_events()
 
     def setup_events(self):
         logger.debug("Setting up Discord events")
+        client = self.client
 
-        @self.client.event
+        @client.event
         async def on_ready():
             logger.info(f"{self.client.user.name} has connected to Discord!")
+
+        @client.event
+        async def on_voice_state_update(member, before, after):
+            if before.channel != after.channel:
+                logger.info(f"Voice state update: {member.name}.")
+                message = None | str
+                if after.channel is None:
+                    message = (
+                        f"{member.name} left the voice channel {before.channel.name}"
+                    )
+                else:
+                    message = (
+                        f"{member.name} joined the voice channel {after.channel.name}"
+                    )
+
+                # send message
+                await self.telegramClient.send_message(message)
 
     async def start(self):
         logger.info("Starting Discord Client")

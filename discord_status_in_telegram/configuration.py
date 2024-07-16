@@ -7,17 +7,6 @@ logger = setup_logger("configuration")
 
 
 class DiscordConfiguration:
-    def __init__(self):
-        self.token = None
-        self.guild_id = None
-        self.client_id = None
-        self.client_secret = None
-        self.redirect_uri = None
-        self.refresh_token = None
-        self.expiration_timestamp = None
-        self.scopes = None
-        self.permissions = None
-
     def set_values(self, dictionary):
         self.token = dictionary.get("token", None)
         self.guild_id = dictionary.get("guild_id", None)

@@ -1,10 +1,13 @@
 import telegram
 
+from .configuration import ConfigurationHolder
+
 
 class TelegramClient:
-    def __init__(self, token, chat_id):
-        self.bot = telegram.Bot(token=token)
-        self.chat_id = chat_id
+    def __init__(self):
+        ch = ConfigurationHolder()
+        self.bot = telegram.Bot(token=ch.telegram.token)
+        self.chat_id = ch.telegram.chat_id
 
     async def send_status(self, status):
         message = "Discord Voice Channels Status:\n\n"
@@ -16,4 +19,7 @@ class TelegramClient:
                 message += "Empty"
             message += "\n\n"
 
+        await self.bot.send_message(chat_id=self.chat_id, text=message)
+
+    async def send_message(self, message):
         await self.bot.send_message(chat_id=self.chat_id, text=message)
