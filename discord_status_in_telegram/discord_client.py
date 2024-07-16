@@ -18,6 +18,8 @@ class DiscordClient:
         logger.info("Initializing Discord Client")
         intents = discord.Intents.default()
         intents.members = True
+        intents.messages = True
+        intents.message_content = True
         self.ch = ConfigurationHolder()
         self.client = commands.Bot(command_prefix="!", intents=intents)
         self.token = self.ch.discord.token
@@ -49,6 +51,13 @@ class DiscordClient:
 
                 # send message
                 await self.telegramClient.send_message(message)
+
+        @client.event
+        async def on_message(message):
+            logger.info(f"Message received at {message.channel}")
+            message = f"""{message.author} sent message to {message.channel}:
+{message.content}"""
+            await self.telegramClient.send_message(message)
 
     async def start(self):
         logger.info("Starting Discord Client")
