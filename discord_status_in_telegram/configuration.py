@@ -66,7 +66,6 @@ class ConfigurationHolder:
         logger.info("Setting configuration values")
         self.discord.set_values(self.config["Discord"])
         self.telegram.set_values(self.config["Telegram"])
-        self.update_interval = self.config["General"]["update_interval"]
 
         logger.debug(self)
 
@@ -94,6 +93,4 @@ class ConfigurationHolder:
     def __str__(self):
         return f"""Configuration values:
 {self.discord}
-{self.telegram}
-General:
-    update_interval: {self.update_interval}"""
+{self.telegram}"""
